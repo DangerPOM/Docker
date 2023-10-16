@@ -1,0 +1,34 @@
+version: "3"
+services:
+  wordpress:
+    image: wordpress
+    ports:
+      -  "8181:80"
+    depends_on:
+      -  mysql
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: "your_pass"
+      WORDPRESS_DB_NAME: wordpress
+    restart: always
+    networks:
+      bg_wordpress:
+        ipv4_address: "192.168.92.11"
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: "your_pass"
+    volumes:
+      -  ./mysql:/var/lib/mysql
+    restart: always
+    networks:
+      bg_wordpress:
+        ipv4_address: "192.168.92.22"
+networks:
+  bg_wordpress:
+    ipam:
+      driver: default
+      config:
+        -  subnet: "192.168.92.0/24"
